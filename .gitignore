@@ -1,0 +1,100 @@
+# ===========================================
+# Node.js
+# ===========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+pnpm-lock.yaml
+
+# ===========================================
+# Environment Files
+# ===========================================
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+frontend/.env.local
+*.env
+
+# ===========================================
+# Logs
+# ===========================================
+logs/
+*.log
+lerna-debug.log
+nestjs-*.log
+
+# ===========================================
+# Build Output
+# ===========================================
+dist/
+build/
+tmp/
+temp/
+.cache/
+.next/
+out/
+
+# ===========================================
+# Prisma
+# ===========================================
+backend/prisma/dev.db
+backend/prisma/*.db
+backend/prisma/*.db-journal
+backend/prisma/migrations/*/migration.sql
+backend/prisma/migrations/*/steps.json
+
+# ===========================================
+# TypeScript Artifacts
+# ===========================================
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ===========================================
+# Operating System Files
+# ===========================================
+.DS_Store
+Thumbs.db
+
+# ===========================================
+# VS Code
+# ===========================================
+.vscode/
+.history/
+.idea/
+
+# ===========================================
+# Docker
+# ===========================================
+docker-data/
+docker-volume/
+**/.docker/
+**/docker-compose.override.yml
+
+# ===========================================
+# Optional: Ignore uploaded images locally
+# Remove if you want to commit placeholder assets
+# ===========================================
+uploads/
+public/uploads/
+
+# ===========================================
+# Next.js Specific
+# ===========================================
+.next/
+.vercel/
+coverage/
+
+# ===========================================
+# Firebase / Supabase (if added later)
+# ===========================================
+*.runtimeconfig.json
+
+# ===========================================
+# Mapbox Cache
+# ===========================================
+mapbox-gl-csp-worker.js
