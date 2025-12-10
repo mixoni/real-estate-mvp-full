@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../auth-context';
 
 type Listing = {
   id: number;
@@ -11,23 +12,56 @@ type Listing = {
 };
 
 export default function AgentDashboardPage() {
+  const { user, token, logout } = useAuth();
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Demo: hard-coded agent id = 1 (from seed script)
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     axios
-      .get<Listing[]>('http://localhost:4000/agents/1/listings')
+      .get<Listing[]>('http://localhost:4000/agents/1/listings', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => setListings(res.data))
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
+
+  if (!token) {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold">Agent Dashboard</h1>
+        <p className="text-sm text-slate-600">
+          You must be logged in as an agent to view this page.
+        </p>
+      </div>
+    );
+  }
+
+  if (user && user.role !== 'AGENT' && user.role !== 'ADMIN') {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold">Agent Dashboard</h1>
+        <p className="text-sm text-slate-600">
+          Your account does not have access to agent features.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Agent Dashboard</h1>
-      <p className="text-sm text-slate-600">
-        Simple skeleton view listing all properties for Agent #1. Extend with forms for create/edit later.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Agent Dashboard</h1>
+          <p className="text-sm text-slate-600">
+            Listing overview for Agent #1 (from seed data).
+          </p>
+        </div>
+      </div>
 
       {loading && <div>Loading...</div>}
 

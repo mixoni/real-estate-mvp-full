@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
+import { MapListing, Map } from '../components/map';
 
 type Listing = {
   id: number;
@@ -9,6 +10,8 @@ type Listing = {
   description: string;
   price: number;
   city: string;
+  lat: number;
+  lng: number;
 };
 
 export default function HomePage() {
@@ -36,17 +39,25 @@ export default function HomePage() {
     });
   }, [listings, city, minPrice, maxPrice]);
 
+  const mapListings: MapListing[] = filtered.map((l) => ({
+    id: l.id,
+    title: l.title,
+    price: l.price,
+    lat: l.lat,
+    lng: l.lng,
+  }));
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Marketplace</h1>
       <p className="text-sm text-slate-600">
-        Simple MVP view – server data from NestJS, client-side filters, map placeholder on the right.
+        Server data from NestJS, client filters + interactive Mapbox map.
       </p>
 
-      <div className="grid gap-4 md:grid-cols-[300px,1fr]">
-        {/* Filters and list */}
+      <div className="grid gap-4 md:grid-cols-[320px,1fr]">
+        {/* Filters + list */}
         <div className="space-y-4">
-          <div className="rounded-lg border bg-white p-4 shadow-sm space-y-3">
+        <div className="rounded-lg border bg-white p-4 shadow-sm space-y-3">
             <h2 className="text-sm font-semibold">Filters</h2>
             <div className="space-y-2 text-sm">
               <div>
@@ -102,9 +113,8 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Map placeholder */}
-        <div className="rounded-lg border bg-slate-100 p-4 text-sm text-slate-600 flex items-center justify-center">
-          Map placeholder — plug Mapbox or Google Maps here.
+        <div className="h-[500px] rounded-lg border bg-slate-100 p-2">
+          <Map listings={mapListings} />
         </div>
       </div>
     </div>

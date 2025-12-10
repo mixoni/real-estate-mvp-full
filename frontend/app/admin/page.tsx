@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../auth-context';
 
 type Listing = {
   id: number;
@@ -16,32 +17,71 @@ type Listing = {
 };
 
 export default function AdminPanelPage() {
+  const { user, token, logout } = useAuth();
   const [pending, setPending] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     axios
-      .get<Listing[]>('http://localhost:4000/admin/listings/pending')
+      .get<Listing[]>('http://localhost:4000/admin/listings/pending', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => setPending(res.data))
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   const act = async (id: number, action: 'approve' | 'deny') => {
-    await axios.post(`http://localhost:4000/admin/listings/${id}/${action}`);
+    if (!token) return;
+    await axios.post(
+      `http://localhost:4000/admin/listings/${id}/${action}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
     await load();
   };
 
+  if (!token) {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold">Admin Panel</h1>
+        <p className="text-sm text-slate-600">
+          You must be logged in as an admin to view this page.
+        </p>
+      </div>
+    );
+  }
+
+  if (user && user.role !== 'ADMIN') {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold">Admin Panel</h1>
+        <p className="text-sm text-slate-600">
+          Your account does not have admin permissions.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Admin Panel</h1>
-      <p className="text-sm text-slate-600">
-        Minimal admin view showing pending listings with Approve / Deny actions.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Admin Panel</h1>
+          <p className="text-sm text-slate-600">
+            Minimal admin view showing pending listings with Approve / Deny actions.
+          </p>
+        </div>
+      </div>
 
       {loading && <div>Loading...</div>}
 

@@ -5,6 +5,9 @@ import { ListingsModule } from '../listings/listings.module';
 import { AuthModule } from '../auth/auth.module';
 import { AgentsModule } from '../agents/agents.module';
 import { AdminModule } from '../admin/admin.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Module({
   imports: [
@@ -14,6 +17,16 @@ import { AdminModule } from '../admin/admin.module';
     AuthModule,
     AgentsModule,
     AdminModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}
