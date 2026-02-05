@@ -20,6 +20,7 @@ export class AdminController {
 
   @Post('listings/:id/deny')
   deny(@Param('id') id: string) {
+    
     return this.adminService.denyListing(+id);
   }
 }
